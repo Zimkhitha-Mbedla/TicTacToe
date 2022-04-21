@@ -1,0 +1,24 @@
+2 players
+
+x plays - player1
+o plays - player2
+check who wins
+
+x plays - player1
+o plays - player2
+check who wins
+
+x plays - player1
+o plays - player2
+check who wins
+
+x plays - player1
+o plays - player2
+check who wins
+
+stop after 4 rounds - tie
+
+variables arrays
+0 -
+1 -
+2 -

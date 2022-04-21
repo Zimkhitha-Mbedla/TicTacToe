@@ -9,22 +9,32 @@ namespace TicTacToeSubmissionConole
     public class TicTacToe
     {
         private TicTacToeConsoleRenderer _boardRenderer;
+        private int[] _boardPositions = new int[9];
+        private int _rounds;
 
         public TicTacToe()
         {
-            _boardRenderer = new TicTacToeConsoleRenderer(10,6);
+            _boardRenderer = new TicTacToeConsoleRenderer(10, 6);
             _boardRenderer.Render();
         }
 
-
-        public void Run()
+        // I really don't like this int design decision we made.  int doesn't look good.  Next class we can change to an enum
+        private void PlayMove(int player)
         {
 
-            // FOR ILLUSTRATION CHANGE TO YOUR OWN LOGIC TO DO TIC TAC TOE
+            // This method needs error handling as it accepts incorrect input from user
+            // We can revist this also in the Exception Handling class and gracefully recover from errors.
+
+
+            // ask user for row and column
 
             Console.SetCursorPosition(2, 19);
 
-            Console.Write("Player X");
+            // change to enum
+            if (player == 1)
+                Console.Write("Player X");
+            else
+                Console.Write("Player O");
 
             Console.SetCursorPosition(2, 20);
 
@@ -38,9 +48,110 @@ namespace TicTacToeSubmissionConole
             var column = Console.ReadLine();
 
 
-            // THIS JUST DRAWS THE BOARD (NO TIC TAC TOE LOGIC)
-            _boardRenderer.AddMove(int.Parse(row), int.Parse(column), PlayerEnum.X, true);            
+            // store move in array
+            int rowNumber = int.Parse(row);
+            int columnNumber = int.Parse(column);
+            int arrayPos = (rowNumber * 3) + columnNumber;
 
+            _boardPositions[arrayPos] = player;
+
+            //  add move to the board
+            if (player == 1)
+                _boardRenderer.AddMove(rowNumber, columnNumber, PlayerEnum.X, true);
+            else
+                _boardRenderer.AddMove(rowNumber, columnNumber, PlayerEnum.O, true);
+
+        }
+
+
+        // I really don't like this int design decision we made.  int doesn't look good.  Next class we can change to an enum
+        public bool CheckIfPlayerWins(int playerEnum)
+        {
+            if ((_boardPositions[0] == playerEnum) && (_boardPositions[1] == playerEnum) && (_boardPositions[2] == playerEnum))
+                return true;
+
+            if ((_boardPositions[3] == playerEnum) && (_boardPositions[4] == playerEnum) && (_boardPositions[5] == playerEnum))
+                return true;
+
+            if ((_boardPositions[6] == playerEnum) && (_boardPositions[7] == playerEnum) && (_boardPositions[8] == playerEnum))
+                return true;
+
+            if ((_boardPositions[0] == playerEnum) && (_boardPositions[3] == playerEnum) && (_boardPositions[6] == playerEnum))
+                return true;
+
+            if ((_boardPositions[1] == playerEnum) && (_boardPositions[4] == playerEnum) && (_boardPositions[7] == playerEnum))
+                return true;
+
+            if ((_boardPositions[2] == playerEnum) && (_boardPositions[5] == playerEnum) && (_boardPositions[8] == playerEnum))
+                return true;
+
+            if ((_boardPositions[0] == playerEnum) && (_boardPositions[4] == playerEnum) && (_boardPositions[8] == playerEnum))
+                return true;
+
+            if ((_boardPositions[2] == playerEnum) && (_boardPositions[4] == playerEnum) && (_boardPositions[6] == playerEnum))
+                return true;
+
+            // DO OTHER 7 Checks                
+
+
+            // Leave this here as it will be false if all states above are false
+            return false;
+        }
+
+        public void Run()
+        {
+            _rounds = 0;
+            bool playerXWins = false;
+            bool playerOWins = false;
+
+            while (_rounds < 4)
+            {
+
+                //Change to Enum
+                PlayMove(1);
+                PlayMove(PlayerEnum.X);
+
+                //Change to Enum
+                playerXWins = CheckIfPlayerWins(1);
+                playerXWins = CheckIfPlayerWins(PlayerEnum.X);
+
+                if (playerXWins)
+                {
+                    Console.WriteLine("Player X Wins!!!");
+
+                    break;
+
+                }
+
+
+                // play o
+
+                //Change to Enum
+                PlayMove(2);
+                PlayMove(PlayerEnum.O);
+                //Change to Enum
+                playerOWins = CheckIfPlayerWins(2);
+                playerOWins = CheckIfPlayerWins(PlayerEnum.O);
+
+                if (playerOWins)
+                {
+                    Console.WriteLine("Player O Wins!!!");
+
+                    break;
+                }
+                // checkif x won
+
+                // if x won, exit
+
+                // check if o won 
+
+                // if o won exit
+
+                _rounds++;
+            }
+
+            if (!playerXWins && !playerOWins)
+                Console.WriteLine("The game is draw!");
         }
 
     }
