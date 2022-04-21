@@ -9,7 +9,7 @@ namespace TicTacToeSubmissionConole
     public class TicTacToe
     {
         private TicTacToeConsoleRenderer _boardRenderer;
-        private int[] _boardPositions = new int[9];
+        private int[] _boardPositions = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1 };
         private int _rounds;
 
         public TicTacToe()
@@ -27,33 +27,75 @@ namespace TicTacToeSubmissionConole
 
 
             // ask user for row and column
+            bool inputValid = false;
 
-            Console.SetCursorPosition(2, 19);
-
-            // change to enum
-            if (player == 1)
-                Console.Write("Player X");
-            else
-                Console.Write("Player O");
-
-            Console.SetCursorPosition(2, 20);
-
-            Console.Write("Please Enter Row: ");
-            var row = Console.ReadLine();
-
-            Console.SetCursorPosition(2, 22);
+            while (!inputValid)
+            {
 
 
-            Console.Write("Please Enter Column: ");
-            var column = Console.ReadLine();
+                Console.SetCursorPosition(2, 19);
+
+                // change to enum
+                if (player == PlayerEnum.X)
+                    Console.Write("Player X");
+                else
+                    Console.Write("Player O");
+
+                Console.SetCursorPosition(2, 20);
+
+                Console.Write("Please Enter Row: ");
+                var row = Console.ReadLine();
+
+                Console.SetCursorPosition(2, 22);
 
 
-            // store move in array
-            int rowNumber = int.Parse(row);
-            int columnNumber = int.Parse(column);
-            int arrayPos = (rowNumber * 3) + columnNumber;
+                Console.Write("Please Enter Column: ");
+                var column = Console.ReadLine();
+                try
+                {
 
-            _boardPositions[arrayPos] = player;
+
+                    // store move in array
+                    int rowNumber = int.Parse(row);
+                    int columnNumber = int.Parse(column);
+                    int arrayPos = (rowNumber * 3) + columnNumber;
+
+                    if (_boardPositions[arrayPos] == -1)
+                    {
+                        _boardPositions[arrayPos] = (int)player;
+                        _boardRenderer.AddMove(rowNumber, columnNumber, player, true);
+                    }
+
+                    else
+                    {
+                        throw new DuplicatePlayException("Player has already played this position");
+                    }
+
+                    inputValid = true;
+                    Console.SetCursorPosition(2, 29);
+                    Console.WriteLine("               ");
+
+                }
+
+                catch (FormatException exception)
+                {
+                    Console.SetCursorPosition(2, 29);
+                    Console.WriteLine("Please enter row and columns as numbers only." + exception.Message);
+                    inputValid = false;
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Console.SetCursorPosition(2, 29);
+                    Console.WriteLine("Please enter numbers between 0 and 2 for row and column");
+                    inputValid = false;
+                }
+               catch (DuplicatePlayException exception)
+                {
+                    Console.SetCursorPosition(2, 29);
+                    Console.WriteLine(exception.Message);
+
+                }
+            }
 
             //  add move to the board
             if (player == 1)
@@ -155,4 +197,7 @@ namespace TicTacToeSubmissionConole
         }
 
     }
+
 }
+
+    //done
