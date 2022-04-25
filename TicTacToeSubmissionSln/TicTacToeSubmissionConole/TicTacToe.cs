@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 using TicTacToeRendererLib.Enums;
 using TicTacToeRendererLib.Renderer;
@@ -11,6 +12,9 @@ namespace TicTacToeSubmissionConole
         private TicTacToeConsoleRenderer _boardRenderer;
         private int[] _boardPositions = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1 };
         private int _rounds;
+        private int arrayPos;
+        private int rowNumber;
+        private int columnNumber;
 
         public TicTacToe()
         {
@@ -19,7 +23,7 @@ namespace TicTacToeSubmissionConole
         }
 
         // I really don't like this int design decision we made.  int doesn't look good.  Next class we can change to an enum
-        private void PlayMove(int player)
+        private void PlayMove(PlayerEnum player)
         {
 
             // This method needs error handling as it accepts incorrect input from user
@@ -89,7 +93,7 @@ namespace TicTacToeSubmissionConole
                     Console.WriteLine("Please enter numbers between 0 and 2 for row and column");
                     inputValid = false;
                 }
-               catch (DuplicatePlayException exception)
+                catch (DuplicatePlayException exception)
                 {
                     Console.SetCursorPosition(2, 29);
                     Console.WriteLine(exception.Message);
@@ -98,10 +102,16 @@ namespace TicTacToeSubmissionConole
             }
 
             //  add move to the board
-            if (player == 1)
-                _boardRenderer.AddMove(rowNumber, columnNumber, PlayerEnum.X, true);
+            if (_boardPositions[arrayPos] == 1)
+            {
+                _boardPositions[arrayPos] = (int)player;
+                _boardRenderer.AddMove(rowNumber, columnNumber, player, true);
+            }
+
             else
-                _boardRenderer.AddMove(rowNumber, columnNumber, PlayerEnum.O, true);
+            {
+                throw new DuplicatePlayException("Player has already played this position");
+            }
 
         }
 
@@ -150,11 +160,11 @@ namespace TicTacToeSubmissionConole
             {
 
                 //Change to Enum
-                PlayMove(1);
+
                 PlayMove(PlayerEnum.X);
 
                 //Change to Enum
-                playerXWins = CheckIfPlayerWins(1);
+
                 playerXWins = CheckIfPlayerWins(PlayerEnum.X);
 
                 if (playerXWins)
@@ -169,10 +179,10 @@ namespace TicTacToeSubmissionConole
                 // play o
 
                 //Change to Enum
-                PlayMove(2);
+
                 PlayMove(PlayerEnum.O);
                 //Change to Enum
-                playerOWins = CheckIfPlayerWins(2);
+
                 playerOWins = CheckIfPlayerWins(PlayerEnum.O);
 
                 if (playerOWins)
@@ -196,8 +206,32 @@ namespace TicTacToeSubmissionConole
                 Console.WriteLine("The game is draw!");
         }
 
+        private bool CheckIfPlayerWins(PlayerEnum O)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+
+    internal class DuplicatePlayerException : Exception
+    {
+        public DuplicatePlayerException()
+        {
+        }
+
+        public DuplicatePlayerException(string message) : base(message)
+        {
+        }
+
+        public DuplicatePlayerException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected DuplicatePlayerException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 
 }
-
     //done
